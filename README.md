@@ -1,16 +1,18 @@
 # Pygmentize (Bundled)
 
-A simple wrapper around Python's Pygments code formatter, with Pygments bundled
--------------------------------------------------------------------------------
+A simple wrapper around Python's Pygments code formatter, with Pygments
+bundled.
+
+This fork of [rvagg's original code](https://github.com/rvagg/node-pygmentize-bundled) implements a streaming API so that you can syntax highlight from a stream.
 
 Similar to [pksunkara's pygments.js](https://github.com/pksunkara/pygments.js) but this comes bundled with Pygments so it doesn't need to be installed on your system, you just need to have Python.
 
-Currently the interface is very simple, no additional options:
+The string interface is very simple:
 
 ```js
 var pygmentize = require('pygmentize-bundled')
 
-pygmentize('js', 'html', 'var a = "b";', function (err, result) {
+pygmentize('js', 'html').fromString('var a = "b";', function (err, result) {
   console.log(result.toString())
 })
 ```
@@ -27,9 +29,21 @@ Results in:
 </pre></div>
 ```
 
+A streaming API is also available:
+
+```js
+var pygmentize = require('pygmentize-bundled')
+
+process.stdin.pipe(
+  pygmentize('js', 'html').fromStream()
+).pipe(process.stdout);
+```
+
 ## API
 
-**pygmentize(lang, format, code, callback)**
+**pygmentize(lang, format).fromString(code, callback)**
+
+**pygmentize(lang, format).fromStream()**
 
 Refer to the [Pygments documentation](http://pygments.org/docs/). For supported languages, see the list of [lexers](http://pygments.org/docs/lexers/), for supported formatted, see the list of [formatters](http://pygments.org/docs/formatters/).
 

@@ -1,10 +1,10 @@
 {
     "name": "pygmentize-bundled"
-  , "version": "0.0.0"
+  , "version": "0.0.1"
   , "description": "A simple wrapper around Python's Pygments code formatter, with Pygments bundled"
   , "main": "index.js"
   , "scripts": {
-    "test": "node ./test.js"
+    "test": "node ./test/test.js"
   }
   , "repository": {
         "type": "git"
@@ -15,9 +15,14 @@
       , "pygmentize"
       , "syntax"
       , "highlight"
+      , "stream"
     ]
   , "authors": [
-        "Rod Vagg @rvagg <rod@vagg.org> (https://github.com/rvagg)"
+        "Rod Vagg @rvagg <rod@vagg.org> (https://github.com/rvagg)",
+        "Cyril Rohr @crohr (https://github.com/crohr)"
     ]
   , "license": "MIT"
+  , "devDependencies": {
+    "stream-equal": ">= 0.0.1"
+  }
 }

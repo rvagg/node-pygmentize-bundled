@@ -1,9 +1,0 @@
-syntax: glob
-*.pyc
-*.pyo
-*.egg
-build/*
-dist/*
-Pygments.egg-info/*
-.ropeproject
-tests/examplefiles/output
