@@ -91,7 +91,7 @@ var spawn           = require('child_process').spawn
             , '-l', options.lang || defaultLang
             , '-P', 'encoding=' + (options.encoding || defaultEncoding)
           ]
-        , exec = spawn(path.join(__dirname, 'vendor/pygments/pygmentize'), execArgs)
+        , exec = spawn("python", [path.join(__dirname, 'vendor/pygments/pygmentize')].concat(execArgs))
 
       return typeof code == 'string' && typeof callback == 'function'
         ? fromString(exec, code, callback)
