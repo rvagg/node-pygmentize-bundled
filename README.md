@@ -11,7 +11,7 @@ Available as a simple *String-in, Buffer-out* interface and also as a *read/writ
 
 Pygmentize a given `code` string and return it as a Buffer to the `callback` Function.
 
-* `options` contains options to be passed to Pygments. Currently only `"lang"` and `"format"` are supported.
+* `options` contains options to be passed to Pygments (see [Options](#options)).
 * `code` is a String to be formatted.
 * `callback` is a Function, called when complete. The first argument will be an `error` object/string if there was a problem and the second argument will be a Buffer containing your formatted code.
 
@@ -19,7 +19,16 @@ Pygmentize a given `code` string and return it as a Buffer to the `callback` Fun
 
 When you only supply the `options` argument, it will return a read/write Stream that you can pipe to and from to format your code.
 
-* `options` contains options to be passed to Pygments. Currently only `"lang"` and `"format"` are supported.
+* `options` contains options to be passed to Pygments (see [Options](#options)).
+
+
+## Options
+
+Language/lexer, formatter, and their options are currently supported. Filters are not supported yet.
+
+* `lang`: source language/lexer name - `string`
+* `format`: output formatter name - `string`
+* `options`: lexer and formatter options - `object`
 
 
 ## Examples
@@ -29,7 +38,7 @@ The string interface is very simple:
 ```js
 var pygmentize = require('pygmentize-bundled')
 
-pygmentize({ lang: 'js', format: 'html'}, 'var a = "b";', function (err, result) {
+pygmentize({ lang: 'js', format: 'html' }, 'var a = "b";', function (err, result) {
   console.log(result.toString())
 })
 ```
@@ -44,6 +53,16 @@ Results in:
   <span class="s2">&quot;b&quot;</span>
   <span class="p">;</span>
 </pre></div>
+```
+
+Example with extra options:
+
+```js
+var pygmentize = require('pygmentize-bundled')
+
+pygmentize({ lang: 'php', format: 'html', options: { startinline: 1 } }, 'var a = true;', function (err, result) {
+  console.log(result.toString())
+})
 ```
 
 A streaming API is also available. Simply omit the `code` and `callback` arguments:
@@ -64,6 +83,7 @@ Refer to the [Pygments documentation](http://pygments.org/docs/). For supported 
 * [Rod Vagg](https://github.com/rvagg)
 * [Cyril Rohr](https://github.com/crohr)
 * [Ahmed Fasih](https://github.com/fasiha)
+* [Scott Walkinshaw](https://github.com/swalkinshaw)
 
 ## Licence & copyright
 

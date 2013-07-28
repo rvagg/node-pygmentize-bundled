@@ -17,10 +17,23 @@ var assert = require('assert')
           , input: 'bool a = true;'
           , output: '\u001b[36mbool\u001b[39;49;00m \u001b[39;49;00ma\u001b[39;49;00m \u001b[39;49;00m=\u001b[39;49;00m \u001b[39;49;00m\u001b[34mtrue\u001b[39;49;00m;\u001b[39;49;00m'
         }
+      , {
+            lang: 'php'
+          , format: 'html'
+          , input: 'var a = true;'
+          , output: '<div class="highlight"><pre><span class="x">var a = true;</span></pre></div>'
+        }
+      , {
+            lang: 'php'
+          , format: 'html'
+          , options: { startinline: 1 }
+          , input: 'var a = true;'
+          , output: '<div class="highlight"><pre><span class="k">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span></pre></div>'
+        }
     ]
 
 cases.forEach(function (c) {
-  pygments({ lang: c.lang, format: c.format }, c.input, function (err, result) {
+  pygments({ lang: c.lang, format: c.format, options: c.options || {} }, c.input, function (err, result) {
     assert.equal(err, null)
     result = result.toString().replace(/\n/g, '')
     assert.equal(result, c.output)

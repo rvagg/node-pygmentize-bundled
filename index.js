@@ -91,7 +91,14 @@ var spawn           = require('child_process').spawn
             , '-l', options.lang || defaultLang
             , '-P', 'encoding=' + (options.encoding || defaultEncoding)
           ]
-        , exec = spawn("python", [path.join(__dirname, 'vendor/pygments/pygmentize')].concat(execArgs))
+
+      if (options.options) {
+        for (var option in options.options) {
+          execArgs.push('-P', option + '=' + options.options[option])
+        }
+      }
+
+      var exec = spawn("python", [path.join(__dirname, 'vendor/pygments/pygmentize')].concat(execArgs))
 
       return typeof code == 'string' && typeof callback == 'function'
         ? fromString(exec, code, callback)
