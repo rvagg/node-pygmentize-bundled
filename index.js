@@ -1,4 +1,5 @@
-var spawn           = require('child_process').spawn
+var nodeExec        = require('child_process').exec
+  , spawn           = require('child_process').spawn
   , path            = require('path')
   , Stream          = require('stream').Stream
 
@@ -98,11 +99,24 @@ var spawn           = require('child_process').spawn
         }
       }
 
-      var exec = spawn("python", [path.join(__dirname, 'vendor/pygments/pygmentize')].concat(execArgs))
+      nodeExec('python -V', function (error, stdout, stderr) {
 
-      return typeof code == 'string' && typeof callback == 'function'
-        ? fromString(exec, code, callback)
-        : fromStream(exec)
+        if (error) {
+          console.log('You must install python to use node-pygmentized-bundled.')
+          process.exit(1)
+        }
+
+        var pythonVersion
+
+        if (stderr.indexOf('3.') !== -1) pythonVersion = 3
+        else pythonVersion = 2
+
+        var exec = spawn("python", [path.join(__dirname, 'vendor/pygments' + pythonVersion + '/pygmentize')].concat(execArgs))
+
+        return typeof code == 'string' && typeof callback == 'function'
+          ? fromString(exec, code, callback)
+          : fromStream(exec)
+      });
     }
 
 module.exports = pygmentize
