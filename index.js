@@ -1,4 +1,5 @@
-var nodeExec        = require('child_process').exec
+var fs              = require('fs')
+  , nodeExec        = require('child_process').exec
   , spawn           = require('child_process').spawn
   , path            = require('path')
   , Stream          = require('stream').Stream
@@ -6,6 +7,8 @@ var nodeExec        = require('child_process').exec
   , defaultFormat   = 'html'
   , defaultLang     = 'js'
   , defaultEncoding = 'utf8'
+  , pythonVersionCacheFile = __dirname + '/.python-version'
+  , cachedPythonVersion
 
   , fromString = function(exec, code, callback) {
       var stdout = []
@@ -35,7 +38,11 @@ var nodeExec        = require('child_process').exec
 
       exec.on('exit', function (code) {
         if (code !== 0) {
+
+          fs.unlink(__dirname + '/.python-version')
           ec = -1
+          console.log('We have python major version ' + cachedPythonVersion + ' cached, but have removed it due to this error.\n\n' +
+                          'If you have switched python major versions, please run node-pygmentize-bundled again and we will update the cached major version.')
           return callback('Error: ' + stderr)
         }
         exitClose()
@@ -99,24 +106,35 @@ var nodeExec        = require('child_process').exec
         }
       }
 
-      nodeExec('python -V', function (error, stdout, stderr) {
+      var pythonVersion
 
-        if (error) {
-          console.log('You must install python to use node-pygmentized-bundled.')
-          process.exit(1)
-        }
+      if (fs.existsSync(__dirname + '/.python-version')) {
+        pythonVersion = fs.readFileSync(__dirname + '/.python-version', 'utf8')
+        startPygments(pythonVersion)
+        cachedPythonVersion = pythonVersion
+      } else {
+        nodeExec('python -V', function (error, stdout, stderr) {
 
-        var pythonVersion
+          if (error) {
+            console.log('You must install python to use node-pygmentized-bundled.')
+            process.exit(1)
+          }
 
-        if (stderr.indexOf('3.') !== -1) pythonVersion = 3
-        else pythonVersion = 2
+          if (stderr.indexOf('3.') !== -1) pythonVersion = 3
+          else pythonVersion = 2
 
+          startPygments(pythonVersion)
+          fs.writeFileSync(__dirname + '/.python-version', pythonVersion)
+        });
+      }
+
+      function startPygments (pythonVersion) {
         var exec = spawn("python", [path.join(__dirname, 'vendor/pygments' + pythonVersion + '/pygmentize')].concat(execArgs))
 
         return typeof code == 'string' && typeof callback == 'function'
           ? fromString(exec, code, callback)
           : fromStream(exec)
-      });
+      }
     }
 
 module.exports = pygmentize
