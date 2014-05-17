@@ -30,7 +30,7 @@ function simpleStringConversionTest (python) {
           , {
                 lang: 'php'
               , format: 'html'
-              , options: { startinline: 1, eol: '\n' }
+              , options: { startinline: 1 }
               , input: 'var a = true;'
               , output: '<div class="highlight"><pre><span class="k">var</span> <span class="nx">a</span> '
                   + '<span class="o">=</span> <span class="k">true</span><span class="p">;</span></pre></div>'
@@ -38,9 +38,9 @@ function simpleStringConversionTest (python) {
           , {
                 lang: 'python'
               , format: 'html'
-              , options: { eol: '\r' }
               , input: '#a\n'
               , output: '<div class="highlight"><pre><span class="c">#a</span>\r</pre></div>\r'
+              , eol: '\r'
             }
         ]
 
@@ -51,8 +51,9 @@ function simpleStringConversionTest (python) {
           {
               lang    : c.lang
             , format  : c.format
-            , options : c.options || { eol: '\n' }
+            , options : c.options || {}
             , python  : python
+            , eol     : c.eol || '\n'
           }
         , c.input
         , function (err, result) {

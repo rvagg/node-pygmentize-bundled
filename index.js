@@ -98,7 +98,7 @@ function pygmentize (options, code, callback) {
     if (err)
       return callback(err)
     if (toString)
-      return fromString(child, code, options.options, callback)
+      return fromString(child, code, options, callback)
     fromStream(retStream, intStream, options, child)
   })
 
