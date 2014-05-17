@@ -35,6 +35,13 @@ function simpleStringConversionTest (python) {
               , output: '<div class="highlight"><pre><span class="k">var</span> <span class="nx">a</span> '
                   + '<span class="o">=</span> <span class="k">true</span><span class="p">;</span></pre></div>'
             }
+          , {
+                lang: 'python'
+              , format: 'html'
+              , options: { eol: '\r' }
+              , input: '#a\n'
+              , output: '<div class="highlight"><pre><span class="c">#a</span>\r</pre></div>\r'
+            }
         ]
 
     t.plan(cases.length * 3)
