@@ -30,7 +30,7 @@ function simpleStringConversionTest (python) {
           , {
                 lang: 'php'
               , format: 'html'
-              , options: { startinline: 1 }
+              , options: { startinline: 1, eol: '\n' }
               , input: 'var a = true;'
               , output: '<div class="highlight"><pre><span class="k">var</span> <span class="nx">a</span> '
                   + '<span class="o">=</span> <span class="k">true</span><span class="p">;</span></pre></div>'
@@ -44,7 +44,7 @@ function simpleStringConversionTest (python) {
           {
               lang    : c.lang
             , format  : c.format
-            , options : c.options || {}
+            , options : c.options || { eol: '\n' }
             , python  : python
           }
         , c.input
@@ -69,7 +69,7 @@ function fileConversionTest (python) {
           , { flags: 'w+', encoding: null, mode: 0666 }
         )
 
-    fileIn.pipe(pygments({ lang: 'rb', format: 'html', python: python })).pipe(fileOut)
+    fileIn.pipe(pygments({ lang: 'rb', format: 'html', python: python, eol: '\n' })).pipe(fileOut)
 
     fileOut.on('close', function() {
       var expectedResult = fs.createReadStream(path.join(__dirname, '/test-fixtures/active_model.html'))

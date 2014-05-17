@@ -2,6 +2,7 @@ const spawn           = require('child_process').spawn
     , exec            = require('child_process').exec
     , path            = require('path')
     , fs              = require('fs')
+    , os              = require('os')
     , PassThrough     = require('readable-stream/passthrough')
     , mkdirp          = require('mkdirp')
     , bl              = require('bl')
@@ -10,18 +11,29 @@ const spawn           = require('child_process').spawn
     , defaultFormat   = 'html'
     , defaultLang     = 'js'
     , defaultEncoding = 'utf8'
+    // This will create a RegExp for OS specific EOL character(s)
+    , osEolRegExp = new RegExp( os.EOL.toString(), 'g' )
 
 var pythonVersions = {}
 
-function fromString (child, code, callback) {
+function fromString (child, code, options, callback) {
   var stdout = bl()
     , stderr = bl()
     , ec     = 0
     , exitClose = function () {
         if (++ec < 2)
           return
-
-        callback(null, stdout.slice())
+        
+        var ret = stdout.slice();
+        // If particular EOL are expected, we need to replace all of
+        // the OS specific EOL and change them to the desired ones
+        if ( options.eol && options.eol !== os.EOL ) {
+          ret = ret.toString().replace( osEolRegExp, options.eol );
+          // Cast back to the Buffer type
+          ret = new Buffer( ret, options.encoding || defaultEncoding );
+        }
+        
+        return callback(null, ret);
       }
 
   child.stdout.pipe(stdout)
@@ -40,9 +52,16 @@ function fromString (child, code, callback) {
   child.stdin.end()
 }
 
-function fromStream (retStream, intStream, child) {
+function fromStream (retStream, intStream, options, child) {
   var stderr    = bl()
     , outStream = through2(function (chunk, enc, callback) {
+        // If particular EOL are expected, we need to replace all of
+        // the OS specific EOL and change them to the desired ones
+        if ( options.eol && options.eol !== os.EOL ) {
+          chunk = chunk.toString().replace( osEolRegExp, options.eol );
+          chunk = new Buffer( chunk, options.encoding || defaultEncoding );
+        }
+        
         retStream.__write(chunk, enc, callback)
       })
 
@@ -79,8 +98,8 @@ function pygmentize (options, code, callback) {
     if (err)
       return callback(err)
     if (toString)
-      return fromString(child, code, callback)
-    fromStream(retStream, intStream, child)
+      return fromString(child, code, options.options, callback)
+    fromStream(retStream, intStream, options, child)
   })
 
   if (retStream) {
