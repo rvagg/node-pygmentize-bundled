@@ -24,16 +24,16 @@ function fromString (child, code, options, callback) {
         if (++ec < 2)
           return
         
-        var ret = stdout.slice();
+        var ret = stdout.slice()
         // If particular EOL are expected, we need to replace all of
         // the OS specific EOL and change them to the desired ones
-        if ( options.eol && options.eol !== os.EOL ) {
-          ret = ret.toString().replace( osEolRegExp, options.eol );
+        if (options.eol && options.eol !== os.EOL) {
+          ret = ret.toString().replace(osEolRegExp, options.eol)
           // Cast back to the Buffer type
-          ret = new Buffer( ret, options.encoding || defaultEncoding );
+          ret = new Buffer(ret, options.encoding || defaultEncoding)
         }
         
-        return callback(null, ret);
+        return callback(null, ret)
       }
 
   child.stdout.pipe(stdout)
@@ -57,9 +57,9 @@ function fromStream (retStream, intStream, options, child) {
     , outStream = through2(function (chunk, enc, callback) {
         // If particular EOL are expected, we need to replace all of
         // the OS specific EOL and change them to the desired ones
-        if ( options.eol && options.eol !== os.EOL ) {
-          chunk = chunk.toString().replace( osEolRegExp, options.eol );
-          chunk = new Buffer( chunk, options.encoding || defaultEncoding );
+        if (options.eol && options.eol !== os.EOL) {
+          chunk = chunk.toString().replace(osEolRegExp, options.eol)
+          chunk = new Buffer(chunk, options.encoding || defaultEncoding)
         }
         
         retStream.__write(chunk, enc, callback)
