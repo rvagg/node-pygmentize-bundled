@@ -83,12 +83,26 @@ function fileConversionTest (python) {
   }
 }
 
+function fileReadTest (python) {
+  return function (t) {
+    t.plan(3)
+
+    pygments({ file: __dirname + '/test-fixtures/active_model.rb', format: 'html' }, function (err, result) {
+      t.equal(err, null)
+      t.ok(Buffer.isBuffer(result), 'isBuffer')
+      t.equal(result.toString(), fs.readFileSync(path.join(__dirname, '/test-fixtures/active_model.html'), 'utf8'))
+    })
+  }
+}
+
 tape('simple string conversions', simpleStringConversionTest())
 tape('file conversions', fileConversionTest())
+tape('file read', fileReadTest())
 
 if (fs.existsSync('/usr/bin/python3')) {
   tape('simple string conversions (python3)', simpleStringConversionTest('/usr/bin/python3'))
   tape('file conversions (python3)', fileConversionTest('/usr/bin/python3'))
+  tape('file read (python3)', fileReadTest('/usr/bin/python3'))
 } else {
   console.error('NO /usr/bin/python3, not testing Python3')
 }

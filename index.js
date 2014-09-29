@@ -36,7 +36,7 @@ function fromString (child, code, callback) {
   })
   child.on('close', exitClose)
 
-  child.stdin.write(code)
+  child.stdin.write(code || '')
   child.stdin.end()
 }
 
@@ -60,12 +60,16 @@ function fromStream (retStream, intStream, child) {
 function pygmentize (options, code, callback) {
   options = options || {}
 
+  if (typeof code == 'function') {
+    callback = code
+    code = null
+  }
+
   var execArgs = [
           '-f', options.format || defaultFormat
-        , '-l', options.lang || defaultLang
         , '-P', 'encoding=' + (options.encoding || defaultEncoding)
       ]
-    , toString  = typeof code == 'string' && typeof callback == 'function'
+    , toString  = typeof callback == 'function'
     , retStream = !toString && through2()
     , intStream = !toString && through2()
 
@@ -73,6 +77,16 @@ function pygmentize (options, code, callback) {
     Object.keys(options.options).forEach(function (key) {
       execArgs.push('-P', key + '=' + options.options[key])
     })
+  }
+
+  if (options.file) {
+    if (options.lang) {
+      execArgs.push('-l', options.lang);
+    }
+
+    execArgs.push(options.file);
+  } else {
+    execArgs.push('-l', options.lang || defaultLang)
   }
 
   spawnPygmentize(options, execArgs, function (err, child) {
