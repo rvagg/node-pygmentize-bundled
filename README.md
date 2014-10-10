@@ -31,6 +31,7 @@ Language/lexer, formatter, and their options are currently supported. Filters ar
 * `lang`: source language/lexer name - `String`
 * `format`: output formatter name - `String`
 * `python`: the full path to the `python` command on the current system, defaults to `'python'` - `String`
+* `eol`: desired End of Line marker in output, defaults to yours OS End od Line char - `String`
 * `options`: lexer and formatter options, each key/value pair is passed through to `pygmentize` with `-P` - `Object`
 
 ## Examples

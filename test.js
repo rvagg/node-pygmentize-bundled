@@ -35,6 +35,13 @@ function simpleStringConversionTest (python) {
               , output: '<div class="highlight"><pre><span class="k">var</span> <span class="nx">a</span> '
                   + '<span class="o">=</span> <span class="k">true</span><span class="p">;</span></pre></div>'
             }
+          , {
+                lang: 'python'
+              , format: 'html'
+              , input: '#a\n'
+              , output: '<div class="highlight"><pre><span class="c">#a</span>\r</pre></div>\r'
+              , eol: '\r'
+            }
         ]
 
     t.plan(cases.length * 3)
@@ -46,6 +53,7 @@ function simpleStringConversionTest (python) {
             , format  : c.format
             , options : c.options || {}
             , python  : python
+            , eol     : c.eol || '\n'
           }
         , c.input
         , function (err, result) {
@@ -69,7 +77,7 @@ function fileConversionTest (python) {
           , { flags: 'w+', encoding: null, mode: 0666 }
         )
 
-    fileIn.pipe(pygments({ lang: 'rb', format: 'html', python: python })).pipe(fileOut)
+    fileIn.pipe(pygments({ lang: 'rb', format: 'html', python: python, eol: '\n' })).pipe(fileOut)
 
     fileOut.on('close', function() {
       var expectedResult = fs.createReadStream(path.join(__dirname, '/test-fixtures/active_model.html'))
