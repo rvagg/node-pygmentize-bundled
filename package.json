@@ -26,11 +26,11 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "bl": "~0.4.1",
-    "through2": "~0.2.1"
+    "bl": "^1.2.0",
+    "through2": "^2.0.3"
   },
   "devDependencies": {
     "stream-equal": "~0.1.5",
-    "tape": "~3.0.3"
+    "tape": "~4.6.3"
   }
 }
